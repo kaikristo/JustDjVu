@@ -1,0 +1,17 @@
+.vs/
+.idea/
+.vscode/
+**/bin/
+**/obj/
+dist/*
+!dist/JustDjVu-win-x64.zip
+.dotnet/
+.appdata/
+.localappdata/
+vendor-downloads/
+vendor-extract/
+vendor-install/
+*.user
+*.suo
+*.log
+test-page.*

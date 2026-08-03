@@ -1,0 +1,91 @@
+<Application x:Class="JustDjvu.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ShutdownMode="OnMainWindowClose">
+    <Application.Resources>
+        <SolidColorBrush x:Key="WindowBrush" Color="#F4F5F7"/>
+        <SolidColorBrush x:Key="PanelBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="PanelAltBrush" Color="#F7F8FA"/>
+        <SolidColorBrush x:Key="ViewerBrush" Color="#292C31"/>
+        <SolidColorBrush x:Key="TextBrush" Color="#1F2329"/>
+        <SolidColorBrush x:Key="MutedTextBrush" Color="#677180"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="#D9DDE3"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#4F6BED"/>
+        <SolidColorBrush x:Key="AccentHoverBrush" Color="#4059D0"/>
+        <SolidColorBrush x:Key="DangerBrush" Color="#D83B42"/>
+
+        <Style TargetType="Window">
+            <Setter Property="Background" Value="{DynamicResource WindowBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+        </Style>
+        <Style TargetType="Menu">
+            <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="6,2"/>
+        </Style>
+        <Style TargetType="MenuItem">
+            <Setter Property="Padding" Value="8,5"/>
+        </Style>
+        <Style TargetType="ToolBar">
+            <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="MinHeight" Value="30"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style x:Key="ToolbarButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="MinWidth" Value="34"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="FontSize" Value="15"/>
+        </Style>
+        <Style x:Key="AccentButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="Padding" Value="7,5"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource TextBrush}"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="Padding" Value="6,4"/>
+        </Style>
+        <Style TargetType="ListBox">
+            <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        </Style>
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        </Style>
+        <Style TargetType="StatusBar">
+            <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="0,1,0,0"/>
+        </Style>
+        <Style TargetType="Separator">
+            <Setter Property="Background" Value="{DynamicResource BorderBrush}"/>
+        </Style>
+    </Application.Resources>
+</Application>
