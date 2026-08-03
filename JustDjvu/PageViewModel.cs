@@ -8,7 +8,10 @@ public sealed class PageViewModel : INotifyPropertyChanged
 {
     private BitmapSource? _image;
     private BitmapSource? _thumbnail;
+    private PageTextLayer? _textLayer;
     private bool _isLoading;
+    private bool _isTextLayerLoading;
+    private bool _isTextLayerLoaded;
     private string? _error;
 
     public PageViewModel(int number) => Number = number;
@@ -27,6 +30,26 @@ public sealed class PageViewModel : INotifyPropertyChanged
         get => _thumbnail;
         set => SetField(ref _thumbnail, value);
     }
+
+    public PageTextLayer? TextLayer
+    {
+        get => _textLayer;
+        set => SetField(ref _textLayer, value);
+    }
+
+    public bool IsTextLayerLoaded
+    {
+        get => _isTextLayerLoaded;
+        set => SetField(ref _isTextLayerLoaded, value);
+    }
+
+    public bool IsTextLayerLoading
+    {
+        get => _isTextLayerLoading;
+        set => SetField(ref _isTextLayerLoading, value);
+    }
+
+    public Task<PageTextLayer>? TextLayerTask { get; set; }
 
     public bool IsLoading
     {

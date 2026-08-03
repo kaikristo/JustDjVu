@@ -151,6 +151,18 @@ public sealed class DjVuEngine : IDisposable
         return result.StandardOutput;
     }
 
+    public async Task<PageTextLayer> ExtractPageTextLayerAsync(
+        int page, CancellationToken cancellationToken = default)
+    {
+        EnsureOpen();
+        page = Math.Clamp(page, 1, PageCount);
+        var result = await RunToolAsync(
+            "djvutxt.exe",
+            [$"--page={page}", "--detail=word", DocumentPath!],
+            cancellationToken);
+        return DjVuTextLayerParser.Parse(result.StandardOutput);
+    }
+
     public async Task<IReadOnlyList<SearchResult>> SearchAsync(
         string query, IProgress<double>? progress = null, CancellationToken cancellationToken = default)
     {

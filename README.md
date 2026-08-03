@@ -68,6 +68,7 @@ to be installed separately.
 - Zoom from 10% to 400%, actual size, fit page, and fit width.
 - Page rotation and full-screen mode.
 - Thumbnails, page-number navigation, and per-document bookmarks.
+- Mouse text selection directly on rendered pages, with clipboard copying.
 - Search within an embedded DjVu text layer.
 - Copy the current page, export it to PNG, save a document copy, and print the
   current page.
@@ -78,8 +79,9 @@ to be installed separately.
 - Automatic restoration of the last document and reading page.
 - Russian, English, German, French, and Spanish interface languages.
 
-> Search is available only when the document contains a text/OCR layer.
-> JustDjVu does not perform optical character recognition itself.
+> Text selection and search are available only when the document contains a
+> text/OCR layer. JustDjVu does not perform optical character recognition
+> itself.
 
 ## Opening a document
 
@@ -120,6 +122,7 @@ Default shortcuts:
 | Open document | `Ctrl+O` | — |
 | Close document | `Ctrl+W` | — |
 | Print current page | `Ctrl+P` | — |
+| Copy selected text | `Ctrl+C` | — |
 | Search text | `Ctrl+F` | — |
 | Previous page | `←` | Wheel up |
 | Next page | `→` | Wheel down |
@@ -148,6 +151,19 @@ To customize the controls:
 4. Select **Save**.
 
 Use **Reset all** to restore the default shortcuts.
+
+### Selecting and copying text
+
+When a DjVu page contains a hidden text layer:
+
+1. Drag the mouse over words on the rendered page.
+2. Press `Ctrl+C` to copy the selection.
+
+You can also right-click a page and choose **Copy selected text**. While the
+text layer is focused, `Ctrl+A` selects all text on that page, `Shift` extends
+an existing selection, and `Esc` clears it. Selection follows the page when it
+is zoomed or rotated and works in Single page, Continuous, and Facing pages
+modes.
 
 ## Settings and languages
 

@@ -158,6 +158,11 @@ public partial class MainWindow : Window
                 var image = model.Image ?? await _engine.RenderPageAsync(_currentPage, false);
                 model.Image = image;
                 SinglePageImage.Source = image;
+                SinglePageTextLayer.PageText = model.TextLayer;
+                _ = LoadTextLayerForVisiblePageAsync(
+                    model,
+                    SinglePageTextLayer,
+                    () => _viewMode == ViewMode.Single && _currentPage == model.Number);
                 ApplyZoom();
             }
             else if (_viewMode == ViewMode.Facing)
@@ -182,6 +187,17 @@ public partial class MainWindow : Window
                     rightModel.IsLoading = false;
                     FacingLeftImage.Source = left;
                     FacingRightImage.Source = right;
+                    FacingLeftTextLayer.PageText = model.TextLayer;
+                    FacingRightTextLayer.PageText = rightModel.TextLayer;
+                    _ = LoadTextLayerForVisiblePageAsync(
+                        model,
+                        FacingLeftTextLayer,
+                        () => _viewMode == ViewMode.Facing && _currentPage == model.Number);
+                    _ = LoadTextLayerForVisiblePageAsync(
+                        rightModel,
+                        FacingRightTextLayer,
+                        () => _viewMode == ViewMode.Facing &&
+                              _currentPage + 1 == rightModel.Number);
                     FacingRightBorder.Visibility = Visibility.Visible;
                 }
                 else
@@ -190,6 +206,12 @@ public partial class MainWindow : Window
                     model.Image = left;
                     FacingLeftImage.Source = left;
                     FacingRightImage.Source = null;
+                    FacingLeftTextLayer.PageText = model.TextLayer;
+                    FacingRightTextLayer.PageText = null;
+                    _ = LoadTextLayerForVisiblePageAsync(
+                        model,
+                        FacingLeftTextLayer,
+                        () => _viewMode == ViewMode.Facing && _currentPage == model.Number);
                     FacingRightBorder.Visibility = Visibility.Collapsed;
                 }
                 ApplyZoom();
@@ -225,27 +247,88 @@ public partial class MainWindow : Window
 
     private async Task LoadFullPageAsync(PageViewModel model)
     {
-        if (model.Image is not null || _engine.DocumentPath is null)
+        if (_engine.DocumentPath is null)
         {
             return;
         }
 
-        model.IsLoading = true;
-        model.Error = null;
+        if (model.Image is null)
+        {
+            model.IsLoading = true;
+            model.Error = null;
+            try
+            {
+                model.Image = await _engine.RenderPageAsync(model.Number, false);
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception ex)
+            {
+                model.Error = ex.Message;
+            }
+            finally
+            {
+                model.IsLoading = false;
+            }
+        }
+
+        _ = LoadTextLayerAsync(model);
+    }
+
+    private async Task LoadTextLayerAsync(PageViewModel model)
+    {
+        if (model.IsTextLayerLoaded || _engine.DocumentPath is null)
+        {
+            return;
+        }
+
+        var loadTask = model.TextLayerTask;
+        if (loadTask is null)
+        {
+            var cancellationToken = _openCancellation?.Token ?? CancellationToken.None;
+            loadTask = _engine.ExtractPageTextLayerAsync(model.Number, cancellationToken);
+            model.TextLayerTask = loadTask;
+            model.IsTextLayerLoading = true;
+        }
+
         try
         {
-            model.Image = await _engine.RenderPageAsync(model.Number, false);
+            model.TextLayer = await loadTask;
+            model.IsTextLayerLoaded = true;
         }
         catch (OperationCanceledException)
         {
+            if (ReferenceEquals(model.TextLayerTask, loadTask))
+            {
+                model.TextLayerTask = null;
+                model.IsTextLayerLoading = false;
+            }
         }
-        catch (Exception ex)
+        catch
         {
-            model.Error = ex.Message;
+            // A missing or malformed hidden text layer should not prevent page viewing.
+            model.TextLayer = PageTextLayer.Empty;
+            model.IsTextLayerLoaded = true;
         }
         finally
         {
-            model.IsLoading = false;
+            if (ReferenceEquals(model.TextLayerTask, loadTask))
+            {
+                model.IsTextLayerLoading = false;
+            }
+        }
+    }
+
+    private async Task LoadTextLayerForVisiblePageAsync(
+        PageViewModel model,
+        SelectableTextLayer target,
+        Func<bool> isStillVisible)
+    {
+        await LoadTextLayerAsync(model);
+        if (isStillVisible())
+        {
+            target.PageText = model.TextLayer;
         }
     }
 
@@ -517,6 +600,9 @@ public partial class MainWindow : Window
             SinglePageImage.Source = null;
             FacingLeftImage.Source = null;
             FacingRightImage.Source = null;
+            SinglePageTextLayer.PageText = null;
+            FacingLeftTextLayer.PageText = null;
+            FacingRightTextLayer.PageText = null;
         }
         UpdateNavigationUi();
     }
@@ -974,10 +1060,10 @@ public partial class MainWindow : Window
 
     private void About_Click(object sender, RoutedEventArgs e) =>
         MessageBox.Show(
-            T("JustDjVu 1.0\n\nСовременный DjVu-ридер для Windows.\n" +
+            T("JustDjVu 0.8.0\n\nСовременный DjVu-ридер для Windows.\n" +
               "Рендеринг документов: DjVuLibre 3.5.29 (GPL v2+).\n\n" +
-              "Поддерживает масштабирование, режимы просмотра, поиск OCR-текста, " +
-              "закладки, печать, drag & drop и «Открыть с помощью»."),
+              "Поддерживает масштабирование, режимы просмотра, выделение и копирование текста, " +
+              "поиск OCR-текста, закладки, печать, drag & drop и «Открыть с помощью»."),
             T("О программе"), MessageBoxButton.OK, MessageBoxImage.Information);
 
     private async void PageNumberBox_KeyDown(object sender, KeyEventArgs e)
